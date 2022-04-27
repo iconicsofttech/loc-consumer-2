@@ -6,11 +6,11 @@ dotenv.config();
 const config = {
   // clientId: process.env.consumerClientId,
   brokers: process.env.KAFKA_BROKERS.split(","),
-  sasl: {
-    mechanism: "SCRAM-SHA-256",
-    username: process.env.KAFKA_SASL_USERNAME,
-    password: process.env.KAFKA_SASL_PASSWORD,
-  },
+  // sasl: {
+  //   mechanism: "SCRAM-SHA-256",
+  //   username: process.env.KAFKA_SASL_USERNAME,
+  //   password: process.env.KAFKA_SASL_PASSWORD,
+  // },
 };
 // const consumer = kafka.consumer({
 //   groupId: process.env.KAFKA_CONSUMER_GROUP_LOCATION_SERVICE,
