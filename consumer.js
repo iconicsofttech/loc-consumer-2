@@ -20,14 +20,17 @@ let logger;
 let rider_location;
 class Consumer {
   constructor() {
+    console.log('Inside Class');
     mongoUtil.connectToServer(function (err) {
       if (err) console.log(err);
       // start the rest of your app here
+      console.log('DB Connected');
       logger = require('./logger');
       rider_location = require("./models/message");
       const run = async () => {
         // consuming
         await this.consumerRun();
+        
       };
       run().catch(err => { logger.error("Consumer connection error",  { errorStack: err }); });
     });
@@ -54,15 +57,18 @@ class Consumer {
     });
   }
   onConnect(info) {
+    console.log('consumer Connected');
     logger.info("Consumer connect", info);
   }
   onSubscribe() {
+    console.log('consumer Subscribe');
     logger.info("Consumer Subscribe");
   }
   onRun(topic, partition, message) {
     try {
       new rider_location({ message: message.value.toString() }).save((err) => {
         if (err) {
+          console.log('consumer Subscribe',err);
           logger.error("data insertion error", { errorStack: err });
         } else {
           consumer.commitOffsets([
@@ -72,6 +78,7 @@ class Consumer {
       });
     }
     catch (error) {
+      console.log('consumer Subscribe',error);
       logger.error("data insertion error", { errorStack: error });
     }
   }
