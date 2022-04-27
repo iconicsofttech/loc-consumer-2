@@ -3,23 +3,6 @@
 
 const kafkajs = jest.genMockFromModule('kafkajs');
 
-class Producer {
-  constructor({ sendCb }) {
-    this.sendCb = sendCb;
-  }
-
-  async connect() {
-    return Promise.resolve();
-  }
-
-  async send({ topic, messages }) {
-    this.sendCb({ topic, messages });
-  }
-
-  async disconnect() {
-    return Promise.resolve();
-  }
-}
 
 class Consumer {
   constructor({ groupId, subscribeCb }) {
@@ -42,12 +25,6 @@ class Consumer {
   async run({ eachMessage }) {
     this.eachMessage = eachMessage;
   }
-  async commitOffsets(data) {
-    return Promise.resolve(data);
-  }
-  async disconnect() {
-    return Promise.resolve();
-  }
 }
 
 kafkajs.Kafka = class Kafka {
@@ -57,34 +34,34 @@ kafkajs.Kafka = class Kafka {
     this.topics = {};
   }
 
-  _subscribeCb(topic, consumer) {
-    this.topics[topic] = this.topics[topic] || {};
-    const topicObj = this.topics[topic];
-    topicObj[consumer.getGroupId()] = topicObj[consumer.getGroupId()] || [];
-    topicObj[consumer.getGroupId()].push(consumer);
-  }
+  // _subscribeCb(topic, consumer) {
+  //   this.topics[topic] = this.topics[topic] || {};
+  //   const topicObj = this.topics[topic];
+  //   topicObj[consumer.getGroupId()] = topicObj[consumer.getGroupId()] || [];
+  //   topicObj[consumer.getGroupId()].push(consumer);
+  // }
 
-  _sendCb({ topic, messages }) {
-    messages.forEach((message) => {
-      Object.values(this.topics[topic]).forEach((consumers) => {
-        const consumerToGetMessage = Math.floor(Math.random() * consumers.length);
-        consumers[consumerToGetMessage].eachMessage({
-          message,
-        });
-      });
-    });
-  }
+  // _sendCb({ topic, messages }) {
+  //   messages.forEach((message) => {
+  //     Object.values(this.topics[topic]).forEach((consumers) => {
+  //       const consumerToGetMessage = Math.floor(Math.random() * consumers.length);
+  //       consumers[consumerToGetMessage].eachMessage({
+  //         message,
+  //       });
+  //     });
+  //   });
+  // }
 
-  producer() {
-    return new Producer({
-      sendCb: this._sendCb.bind(this),
-    });
-  }
+  // producer() {
+  //   return new Producer({
+  //     sendCb: this._sendCb.bind(this),
+  //   });
+  // }
 
   consumer({ groupId }) {
     return new Consumer({
       groupId,
-      subscribeCb: this._subscribeCb.bind(this),
+      // subscribeCb: this._subscribeCb.bind(this),
     });
   }
 };

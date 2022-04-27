@@ -1,6 +1,8 @@
 
 const Consumer = require('../consumer');
-// require('../kafka/kafka-producer');
+jest.mock('kafkajs');
+
+const { Kafka } = require('../__mock__/kafkajs');
 
 jest.mock('../database.js', () => {
     return {
@@ -15,37 +17,44 @@ jest.mock('../logger', () => {
         error: jest.fn()
     };
 });
+
 jest.mock('../logger/prod-logger');
-jest.mock('kafkajs');
 jest.mock('../models/message');
 jest.mock('mongoose');
 
 describe('Test consumer.js', () => {
-    let consumer = new Consumer();
-    jest.spyOn(consumer, 'onConnect');
-    jest.spyOn(consumer, 'onSubscribe');
-    jest.spyOn(consumer, 'onRun');
-    jest.spyOn(consumer, 'onError');
-    jest.spyOn(consumer, 'consumerRun');
-    test("check on connect", () => {
-        consumer.onConnect('test');
-        expect(consumer.onConnect).toHaveBeenCalledTimes(1);
+    let consumerObj = new Consumer();
+    const kafkatest = new Kafka({
+        brokers: 'broker',
+        clientId: 'testclient'
     });
+    consumerObj.consumer= kafkatest.consumer('mongo-app-nodejs');
+
+    jest.spyOn(consumerObj, 'onConnect');
+    jest.spyOn(consumerObj, 'onSubscribe');
+    jest.spyOn(consumerObj, 'onRun');
+    jest.spyOn(consumerObj, 'onError');
+    jest.spyOn(consumerObj, 'consumerRun');
+    test("check on connect", () => {
+        consumerObj.onConnect('test');
+        expect(consumerObj.onConnect).toHaveBeenCalledTimes(1);
+    });
+
     test("check on subscribe", () => {
-        consumer.onSubscribe();
-        expect(consumer.onSubscribe).toHaveBeenCalledTimes(1);
+        consumerObj.onSubscribe();
+        expect(consumerObj.onSubscribe).toHaveBeenCalledTimes(1);
     });
     test("check on running kafka", () => {
-        consumer.onRun('Test', 'Test', { value: 'test', offset: 'test offset' });
-        expect(consumer.onRun).toHaveBeenCalledTimes(1);
+        consumerObj.onRun('Test', 'Test', { value: 'test', offset: 'test offset' });
+        expect(consumerObj.onRun).toHaveBeenCalledTimes(1);
     });
     test("check on onError", () => {
-        consumer.onError('Test', {});
-        expect(consumer.onError).toHaveBeenCalledTimes(1);
+        consumerObj.onError('Test', {});
+        expect(consumerObj.onError).toHaveBeenCalledTimes(1);
     });
     test("check on consumerRun", () => {
-        consumer.consumerRun();
-        expect(consumer.consumerRun).toHaveBeenCalledTimes(1);
+        consumerObj.consumerRun();
+        expect(consumerObj.consumerRun).toHaveBeenCalledTimes(1);
 
     });
 });

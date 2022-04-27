@@ -3,53 +3,54 @@ const dotenv = require("dotenv");
 let mongoUtil = require('./database');
 dotenv.config();
 
-const kafka = new Kafka({
+const config = {
   // clientId: process.env.consumerClientId,
   brokers: process.env.KAFKA_BROKERS.split(","),
-//   sasl: {
-//     mechanism: "SCRAM-SHA-256",
-//     username: process.env.KAFKA_SASL_USERNAME,
-//     password: process.env.KAFKA_SASL_PASSWORD,
-//   },
-});
-const consumer = kafka.consumer({
-  groupId: process.env.KAFKA_CONSUMER_GROUPID,
-});
+  sasl: {
+    mechanism: "SCRAM-SHA-256",
+    username: process.env.KAFKA_SASL_USERNAME,
+    password: process.env.KAFKA_SASL_PASSWORD,
+  },
+};
+// const consumer = kafka.consumer({
+//   groupId: process.env.KAFKA_CONSUMER_GROUP_LOCATION_SERVICE,
+// });
 const topic = process.env.KAFKA_TOPIC_LOCATION_SERVICE;
 let logger;
 let rider_location;
 class Consumer {
   constructor() {
-    console.log('Inside Class');
-    mongoUtil.connectToServer(function (err) {
+    this.connection = new Kafka(config);
+    this.consumer = this.connection.consumer({
+      groupId: process.env.KAFKA_CONSUMER_GROUP_LOCATION_SERVICE,
+    });
+    mongoUtil.connectToServer((err) => {
       if (err) console.log(err);
       // start the rest of your app here
-      console.log('DB Connected');
       logger = require('./logger');
       rider_location = require("./models/message");
       const run = async () => {
         // consuming
         await this.consumerRun();
-        
       };
-      run().catch(err => { logger.error("Consumer connection error",  { errorStack: err }); });
+      run().catch(err => { logger.error("Consumer connection error", { errorStack: err }); });
     });
   }
-   consumerRun() {
-     consumer.connect().then(
+  consumerRun() {
+    this.consumer.connect().then(
       (info) => {
         this.onConnect(info);
       },
       (err) => {
-        logger.error("Consumer connection error",  { errorStack: err }); 
+        logger.error("Consumer connection error", { errorStack: err });
       }
     );
 
-     consumer.subscribe({ topic, fromBeginning: true }).then(() => {
+    this.consumer.subscribe({ topic, fromBeginning: true }).then(() => {
       this.onSubscribe();
     });
 
-     consumer.run({
+    this.consumer.run({
       autoCommit: false,
       eachMessage: async ({ topic, partition, message }) => {
         this.onRun(topic, partition, message);
@@ -57,28 +58,24 @@ class Consumer {
     });
   }
   onConnect(info) {
-    console.log('consumer Connected');
     logger.info("Consumer connect", info);
   }
   onSubscribe() {
-    console.log('consumer Subscribe');
     logger.info("Consumer Subscribe");
   }
   onRun(topic, partition, message) {
     try {
       new rider_location({ message: message.value.toString() }).save((err) => {
         if (err) {
-          console.log('consumer Subscribe',err);
           logger.error("data insertion error", { errorStack: err });
         } else {
-          consumer.commitOffsets([
+          this.consumer.commitOffsets([
             { topic, partition, offset: message.offset },
           ]);
         }
       });
     }
     catch (error) {
-      console.log('consumer Subscribe',error);
       logger.error("data insertion error", { errorStack: error });
     }
   }
