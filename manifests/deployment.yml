@@ -1,19 +1,19 @@
 apiVersion : apps/v1
 kind: Deployment
 metadata:
-  name: "locdev2-cb9c"
+  name: "locdevnew-1fbc"
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: "locdev2-cb9c"
+      app: "locdevnew-1fbc"
   template:
     metadata:
       labels:
-        app: "locdev2-cb9c"
+        app: "locdevnew-1fbc"
     spec:
       containers:
-        - name: "locdev2-cb9c"
-          image: "locdevcsr.azurecr.io/locdev2"
+        - name: "locdevnew-1fbc"
+          image: "csriconic.azurecr.io/locdevnew"
           ports:
           - containerPort: 3000
