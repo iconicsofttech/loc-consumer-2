@@ -24,15 +24,15 @@ jobs:
     
     - name: Create namespace
       run: |
-        namespacePresent=`kubectl get namespace | grep loc-dev-consum | wc -l`
+        namespacePresent=`kubectl get namespace | grep loc-dev-consumer123 | wc -l`
         if [ $namespacePresent -eq 0 ]
         then
-            echo `kubectl create namespace loc-dev-consum`
+            echo `kubectl create namespace loc-dev-consumer123`
         fi
 
     - uses: azure/k8s-create-secret@v1
       with:
-        namespace: loc-dev-consum
+        namespace: loc-dev-consumer123
         container-registry-url: csriconic.azurecr.io
         container-registry-username: ${{ secrets.acr_csriconic_username }}
         container-registry-password: ${{ secrets.acr_csriconic_password }}
@@ -40,7 +40,7 @@ jobs:
        
     - uses: azure/k8s-deploy@v1.2
       with:
-        namespace: loc-dev-consum
+        namespace: loc-dev-consumer123
         manifests: |
           manifests/deployment.yml
           manifests/service.yml
