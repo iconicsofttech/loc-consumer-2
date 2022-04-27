@@ -4,7 +4,7 @@ let mongoUtil = require('./database');
 dotenv.config();
 
 const config = {
-  // clientId: process.env.consumerClientId,
+  /// clientId: process.env.consumerClientId,
   brokers: process.env.KAFKA_BROKERS.split(","),
   // sasl: {
   //   mechanism: "SCRAM-SHA-256",
