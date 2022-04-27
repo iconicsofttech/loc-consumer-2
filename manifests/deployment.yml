@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "locdev2-cb9c"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "locdev2-cb9c"
+  template:
+    metadata:
+      labels:
+        app: "locdev2-cb9c"
+    spec:
+      containers:
+        - name: "locdev2-cb9c"
+          image: "locdevcsr.azurecr.io/locdev2"
+          ports:
+          - containerPort: 3000
