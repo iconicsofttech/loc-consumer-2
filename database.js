@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require("mongoose");
-const url = process.env.MONGODB_CONNECTION_URL_LOCATION_SERVICE;
+const url = process.env.MONGODB_CONNECTION_STRING;
 let _db;
 
 module.exports = {
