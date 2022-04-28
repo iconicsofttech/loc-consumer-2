@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: "locdevnew-82d0"
 spec:
-  replicas: 75
+  replicas: 20
   selector:
     matchLabels:
       app: "locdevnew-82d0"
