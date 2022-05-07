@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "locdevconsumer-dcdc"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "locdevconsumer-dcdc"
+  template:
+    metadata:
+      labels:
+        app: "locdevconsumer-dcdc"
+    spec:
+      containers:
+        - name: "locdevconsumer-dcdc"
+          image: "csriconic.azurecr.io/locdevconsumer"
+          ports:
+          - containerPort: 3000
