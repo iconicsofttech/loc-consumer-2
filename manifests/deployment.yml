@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: "locdevconsumer-dcdc"
 spec:
-  replicas: 50
+  replicas: 3
   selector:
     matchLabels:
       app: "locdevconsumer-dcdc"
