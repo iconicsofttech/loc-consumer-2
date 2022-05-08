@@ -67,19 +67,22 @@ class Consumer {
   onRun(topic, partition, message) {
     try {
       count++;
-//       new rider_location({ message: message.value.toString() }).save((err) => {
-//         if (err) {
-//           logger.error("data insertion error", { errorStack: err });
-//         } else {
-// //           this.consumer.commitOffsets([
-// //             { topic, partition, offset: message.offset },
-// //           ]);
-//         }
-//       });
+      new rider_location({ message: message.value.toString() }).save((err) => {
+        if (err) {
+          console.log(err)
+          logger.error("data insertion error", { errorStack: err });
+          
+        } else {
+//           this.consumer.commitOffsets([
+//             { topic, partition, offset: message.offset },
+//           ]);
+        }
+      });
         console.log(count)
         // console.log(message.value.toString())
     }
     catch (error) {
+      console.log(error)
       logger.error("data insertion error", { errorStack: error });
     }
   }
