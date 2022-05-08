@@ -77,7 +77,7 @@ class Consumer {
 //         }
 //       });
         console.log(count)
-        console.log(message.value.toString())
+        // console.log(message.value.toString())
     }
     catch (error) {
       logger.error("data insertion error", { errorStack: error });
