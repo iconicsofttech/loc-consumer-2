@@ -18,6 +18,7 @@ const config = {
 const topic = process.env.KAFKA_TOPIC_LOCATION_SERVICE;
 let logger;
 let rider_location;
+let count = 0;
 class Consumer {
   constructor() {
     this.connection = new Kafka(config);
@@ -65,15 +66,18 @@ class Consumer {
   }
   onRun(topic, partition, message) {
     try {
-      new rider_location({ message: message.value.toString() }).save((err) => {
-        if (err) {
-          logger.error("data insertion error", { errorStack: err });
-        } else {
-//           this.consumer.commitOffsets([
-//             { topic, partition, offset: message.offset },
-//           ]);
-        }
-      });
+      count++;
+//       new rider_location({ message: message.value.toString() }).save((err) => {
+//         if (err) {
+//           logger.error("data insertion error", { errorStack: err });
+//         } else {
+// //           this.consumer.commitOffsets([
+// //             { topic, partition, offset: message.offset },
+// //           ]);
+//         }
+//       });
+        console.log(count)
+        console.log(message.value.toString())
     }
     catch (error) {
       logger.error("data insertion error", { errorStack: error });
