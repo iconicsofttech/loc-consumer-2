@@ -51,7 +51,7 @@ class Consumer {
     });
 
     this.consumer.run({
-      autoCommit: false,
+      autoCommit: true,
       eachMessage: async ({ topic, partition, message }) => {
         this.onRun(topic, partition, message);
       },
@@ -69,9 +69,9 @@ class Consumer {
         if (err) {
           logger.error("data insertion error", { errorStack: err });
         } else {
-          this.consumer.commitOffsets([
-            { topic, partition, offset: message.offset },
-          ]);
+//           this.consumer.commitOffsets([
+//             { topic, partition, offset: message.offset },
+//           ]);
         }
       });
     }
