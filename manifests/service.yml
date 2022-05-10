@@ -4,12 +4,3 @@ metadata:
     name: "locdevconsumer-dcdc"
     labels:
         app: "locdevconsumer-dcdc"
-spec:
-    type: LoadBalancer
-    ports:
-    - port: 3000
-      targetPort: 3000
-      protocol: TCP
-      name: http
-    selector:
-        app: "locdevconsumer-dcdc"
