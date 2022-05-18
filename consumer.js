@@ -12,13 +12,12 @@ const config = {
     password: process.env.KAFKA_SASL_PASSWORD,
   },
 };
-const consumer = kafka.consumer({
-  groupId: process.env.KAFKA_CONSUMER_GROUP_LOCATION_SERVICE,
-});
+// const consumer = kafka.consumer({
+//   groupId: process.env.KAFKA_CONSUMER_GROUP_LOCATION_SERVICE,
+// });
 const topic = process.env.KAFKA_TOPIC_LOCATION_SERVICE;
 let logger;
 let rider_location;
-let count = 0;
 class Consumer {
   constructor() {
     this.connection = new Kafka(config);
@@ -66,23 +65,17 @@ class Consumer {
   }
   onRun(topic, partition, message) {
     try {
-      count++;
       new rider_location({ message: message.value.toString() }).save((err) => {
         if (err) {
-          console.log(err)
           logger.error("data insertion error", { errorStack: err });
-          
         } else {
 //           this.consumer.commitOffsets([
 //             { topic, partition, offset: message.offset },
 //           ]);
         }
       });
-        console.log(count)
-        // console.log(message.value.toString())
     }
     catch (error) {
-      console.log(error)
       logger.error("data insertion error", { errorStack: error });
     }
   }
