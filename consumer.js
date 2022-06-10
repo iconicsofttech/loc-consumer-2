@@ -65,7 +65,8 @@ class Consumer {
   }
   onRun(topic, partition, message) {
     try {
-      new rider_location({ message: message.value.toString() }).save((err) => {
+      let getJsonMessage =this.formatMessage(message.value.toString());
+      new rider_location(getJsonMessage).save((err) => {
         if (err) {
           logger.error("data insertion error", { errorStack: err });
         } else {
@@ -82,5 +83,31 @@ class Consumer {
   onError(title, err) {
     logger.error(title, { errorStack: err });
   }
+  formatMessage(stringMessage){
+    const arrayMessage=stringMessage.split("|");
+    let jsonMessage={};
+    if(arrayMessage.length>0){
+      jsonMessage.message=stringMessage;
+      jsonMessage.grab_id=arrayMessage[0];
+      jsonMessage.device_imei=arrayMessage[1];
+      jsonMessage.datetime=arrayMessage[2];
+      jsonMessage.lat=arrayMessage[3];
+      jsonMessage.lon=arrayMessage[4];
+      jsonMessage.speed=arrayMessage[5];
+      jsonMessage.alt=arrayMessage[6];
+      jsonMessage.gps_status=arrayMessage[7];
+      jsonMessage.battery=arrayMessage[8];
+      jsonMessage.provider=arrayMessage[9];
+      jsonMessage.realtime_nanos=arrayMessage[10];
+      jsonMessage.bearing=arrayMessage[11];
+      jsonMessage.accuracy=arrayMessage[12];
+      jsonMessage.appversion=arrayMessage[13];
+      jsonMessage.timestamp=arrayMessage[14];
+      jsonMessage.sid=arrayMessage[15];
+      }
+      return jsonMessage;
+    }
+
+  
 }
 module.exports = Consumer;
