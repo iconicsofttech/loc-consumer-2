@@ -102,7 +102,7 @@ class Consumer {
       jsonMessage.bearing=arrayMessage[11];
       jsonMessage.accuracy=arrayMessage[12];
       jsonMessage.appversion=arrayMessage[13];
-      jsonMessage.timestamp=arrayMessage[14];
+      jsonMessage.timestamp=new Date(arrayMessage[14]).toISOString();
       jsonMessage.sid=arrayMessage[15];
       }
       return jsonMessage;
